@@ -2,8 +2,6 @@ from selenium.webdriver.common.by import By
 
 
 LOCATOR_BUTTON_LOGIN = (By.XPATH, '//div[h3="Вход в рекламный кабинет"]//div[text()="Войти"]')
-
-# "div" вместо "*" по непонятной мне причине рандомно фейлил
 LOCATOR_BUTTON_LOGIN_MENU = (By.XPATH, '//*[text()="Войти"]')
 
 LOCATOR_BUTTON_LOGOUT = (By.XPATH, '//a[text()="Выйти"]')
@@ -21,3 +19,6 @@ LOCATOR_INPUT_PASSWORD = (By.XPATH, '//input[@name="password"]')
 LOCATOR_INPUT_ADDITIONAL_EMAILS = (By.XPATH, '//div[@data-class-name="AdditionalEmailRow"]//input')
 LOCATOR_INPUT_FIO = (By.XPATH, '//div[@data-name="fio"]//input')
 LOCATOR_INPUT_PHONE = (By.XPATH, '//div[@data-name="phone"]//input')
+
+LOCATOR_TEXT_CONTROL_BILLING = (By.XPATH, '//span[text()="Поступления и списания"]')
+LOCATOR_TEXT_CONTROL_SEGMENTS = (By.XPATH, '//span[text()="Аудиторные сегменты"]')

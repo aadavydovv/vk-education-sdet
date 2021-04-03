@@ -1,116 +1,87 @@
-from random_credentials import get_random_email
 from selenium.common.exceptions import ElementNotInteractableException
 from selenium.common.exceptions import StaleElementReferenceException
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as ec
 from time import sleep
 import locators
 import pytest
+import random_credentials as rc
 
 AMOUNT_OF_RELOADS = 3
-PAGE_CHECK_ERROR = 'Page failed to load properly'
-
-# насчет ElementNotInteractableException:
-# порой страницы загружались так, что определенный интерактивный элемент оказывался НЕинтерактивным
-# так и не понял почему, однако рефреш всегда это фиксил
 CLICK_EXCEPTIONS = (ElementNotInteractableException, StaleElementReferenceException)
-
-# без некоторого ожидания после загрузки страницы порой недогружались(?)
-# 3 секунды - минимальное значение, при котором тесты стабильно проходили
-WAIT_TIME = 3
+DEFAULT_MESSAGE = 'Page failed to load properly'
+TIME_WAIT = 5
+TIME_SLEEP = 3
 
 
 class Base:
-    __driver = None
-    credentials = {
-        'login': None,
-        'password': None,
-        'fio': None,
-        'phone': None
-    }
-
     @pytest.fixture(scope='function', autouse=True)
-    def __setup(self, driver, config):
-        self.__driver = driver
-        self.credentials['login'] = config['login']
-        self.credentials['password'] = config['password']
-        self.credentials['fio'] = config['fio']
-        self.credentials['phone'] = config['phone']
+    def setup(self, driver, config):
+        self.driver = driver
+        self.config = config
 
-    def __input(self, locator, data):
-        form = self.__find(locator)
+    def input(self, locator, data):
+        form = self.find(locator)
         form.clear()
         form.send_keys(data)
 
-    def __input_random_emails(self):
-        forms = self.__driver.find_elements(*locators.LOCATOR_INPUT_ADDITIONAL_EMAILS)
-        email = get_random_email()
+    def input_random_emails(self):
+        forms = self.driver.find_elements(*locators.LOCATOR_INPUT_ADDITIONAL_EMAILS)
+        email = rc.get_random_email()
 
         for form in forms:
             form.clear()
             email[1] += 1
             form.send_keys(''.join(str(e) for e in email))
 
-    def __reload(self, wait_time=WAIT_TIME):
-        self.__driver.refresh()
-        sleep(wait_time)
+    def reload(self):
+        self.driver.refresh()
+        sleep(TIME_SLEEP)
 
-    def __find(self, locator):
-        return self.__driver.find_element(*locator)
+    def find(self, locator, message=DEFAULT_MESSAGE):
+        return self.wait().until(ec.presence_of_element_located(locator), message=message)
 
-    def edit_info(self, amount_of_reloads=AMOUNT_OF_RELOADS, wait_time=WAIT_TIME):
-        for n in range(amount_of_reloads + 1):
+    def wait(self):
+        return WebDriverWait(self.driver, timeout=TIME_WAIT)
+
+    def edit_info(self):
+        self.find(locators.LOCATOR_INPUT_FIO)
+
+        new_fio = rc.get_random_fio()
+
+        self.input(locators.LOCATOR_INPUT_FIO, new_fio)
+        self.input(locators.LOCATOR_INPUT_PHONE, rc.get_random_phone())
+        self.input_random_emails()
+
+        self.click(locators.LOCATOR_BUTTON_SAVE)
+
+        return new_fio
+
+    def check_edited_info(self, fio_new):
+        self.driver.refresh()
+        fio_after_refresh = self.find(locators.LOCATOR_INPUT_FIO).get_attribute('value')
+        assert fio_after_refresh == fio_new, 'Failed to edit info'
+
+    def click(self, locator):
+        for n in range(AMOUNT_OF_RELOADS + 1):
             try:
-                self.__input(locators.LOCATOR_INPUT_FIO, self.credentials['fio'])
-                self.__input(locators.LOCATOR_INPUT_PHONE, self.credentials['phone'])
-                self.__input_random_emails()
-
-                self.click(locators.LOCATOR_BUTTON_SAVE, 0)
+                self.find(locator).click()
 
             except CLICK_EXCEPTIONS:
-                if n == amount_of_reloads:
+                if n == AMOUNT_OF_RELOADS:
                     raise
 
-                self.__reload(wait_time)
+                self.reload()
                 continue
 
             break
 
-    def check_page(self, keyword, message=PAGE_CHECK_ERROR, amount_of_reloads=AMOUNT_OF_RELOADS,
-                   wait_time=WAIT_TIME):
-        for n in range(amount_of_reloads + 1):
-            try:
-                assert keyword in self.__driver.page_source, message
-
-            except AssertionError:
-                if n == amount_of_reloads:
-                    raise
-
-                self.__reload(wait_time)
-                continue
-
-            break
-
-    def click(self, locator, amount_of_reloads=AMOUNT_OF_RELOADS, wait_time=WAIT_TIME):
-        # пробовал вынести алгоритм ниже, также встречающийся в edit_info и check_page, в отдельный метод,
-        # однако нехватило скилла, чтобы заставить селениум сотрудничать :(
-        for n in range(amount_of_reloads + 1):
-            try:
-                self.__find(locator).click()
-
-            except CLICK_EXCEPTIONS:
-                if n == amount_of_reloads:
-                    raise
-
-                self.__reload(wait_time)
-                continue
-
-            break
-
-        sleep(wait_time)
+        sleep(TIME_SLEEP)
 
     def login(self):
         self.click(locators.LOCATOR_BUTTON_LOGIN_MENU)
 
-        self.__input(locators.LOCATOR_INPUT_EMAIL, self.credentials['login'])
-        self.__input(locators.LOCATOR_INPUT_PASSWORD, self.credentials['password'])
+        self.input(locators.LOCATOR_INPUT_EMAIL, self.config['login'])
+        self.input(locators.LOCATOR_INPUT_PASSWORD, self.config['password'])
 
         self.click(locators.LOCATOR_BUTTON_LOGIN)

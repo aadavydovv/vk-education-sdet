@@ -25,6 +25,13 @@ class LocatorsPostAuth(LocatorsBase):
 
 
 class LocatorsSegments(LocatorsBase):
+    def entry_checkbox_by_title(self, title, find_method):
+        locator_entry = self.entry_by_title(title)
+        locator_entry_parent = locator_entry[0], f'{locator_entry[1]}/..'
+        entry_parent = find_method(locator_entry_parent)
+        attribute_for_locator = entry_parent.get_attribute('data-test').replace('name', 'id')
+        return By.XPATH, f'//div[@data-test="{attribute_for_locator}"]//input'
+
     BUTTON_CREATE_FIRST_SEGMENT = (By.XPATH, '//a[text()="Создайте"]')
     BUTTON_CREATE_SUBSEQUENT_SEGMENT = (By.XPATH, '//button[div="Создать сегмент"]')
 
@@ -36,9 +43,6 @@ class LocatorsSegments(LocatorsBase):
 
     BUTTON_ACTIONS = (By.XPATH, '//div[span="Действия"]')
     BUTTON_DELETE_SEGMENT = (By.XPATH, '//li[@title="Удалить"]')
-
-    BUTTON_FIRST_SEGMENT = (By.XPATH, '//div[@data-row-id="central-0"]//input')
-    TEXT_FIRST_SEGMENT = (By.XPATH, '//a[contains(@href, "segments_list") and @title]')
 
 
 class LocatorsCampaignCreation(LocatorsBase):

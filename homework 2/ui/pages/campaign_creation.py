@@ -15,14 +15,10 @@ class PageCampaignCreation(PageBase):
         self.click(self.locators.BUTTON_FORMAT_BANNER)
         self.input(self.locators.INPUT_PICTURE, path_picture, clear=False)
 
-        campaign_name = str(datetime.now())
+        campaign_name = f'campaign from {datetime.now()}'
         self.input(self.locators.INPUT_NAME, campaign_name)
-        self.new_campaign_name = campaign_name
 
         self.click(self.locators.BUTTON_FINISH_CREATION)
         self.find(self.locators.TEXT_SUCCESS)
 
-    @allure.step('checking if the new campaign was successfully created')
-    def check_creation(self):
-        self.find(self.locators.entry_by_title(self.new_campaign_name),
-                  'cannot find the new campaign among the entries')
+        return campaign_name

@@ -76,3 +76,8 @@ class PageBase(object):
             form.clear()
 
         form.send_keys(data)
+
+    @allure.step('checking if the entry "{new_entry_name}" was created')
+    def check_creation(self, new_entry_name):
+        self.find(self.locators.entry_by_title(new_entry_name),
+                  f'cannot find the entry "{new_entry_name}"')

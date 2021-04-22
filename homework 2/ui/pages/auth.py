@@ -11,23 +11,11 @@ class PageAuth(PageBase):
 
     @pytest.mark.UI
     @allure.step('logging in')
-    def log_in(self, config, incorrect_login=False, incorrect_password=False):
+    def log_in(self, config, login=None, password=None):
         self.click(self.locators.BUTTON_LOG_IN_MENU)
 
-        credentials = {}
-
-        if incorrect_login:
-            credentials['login'] = 0
-        else:
-            credentials['login'] = config['login']
-
-        if incorrect_password:
-            credentials['password'] = 0
-        else:
-            credentials['password'] = config['password']
-
-        self.input(self.locators.INPUT_LOGIN, credentials['login'])
-        self.input(self.locators.INPUT_PASSWORD, credentials['password'])
+        self.input(self.locators.INPUT_LOGIN, login if login else config['login'])
+        self.input(self.locators.INPUT_PASSWORD, password if password else config['password'])
 
         self.click(self.locators.BUTTON_LOG_IN)
 

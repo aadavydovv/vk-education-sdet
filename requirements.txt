@@ -4,3 +4,4 @@ selenium~=3.141.0
 allure-pytest~=2.8.40
 webdriver-manager~=3.4.1
 requests~=2.25.1
+Appium-Python-Client~=1.1.0

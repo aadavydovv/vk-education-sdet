@@ -8,4 +8,4 @@ class ApiBase:
         self.api_client = ApiClient(config)
 
         self.api_client.post_auth()
-        self.api_client.collect_cookies()
+        self.api_client.collect_csrftoken()

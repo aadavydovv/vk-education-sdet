@@ -6,7 +6,6 @@ import collections
 import json
 
 PATH_DIR_OUTPUT = Path('/tmp/parsed_log')
-TYPES_REQUESTS = ('CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE')
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--file', default='../misc/access.log')
@@ -18,15 +17,14 @@ PATH_DIR_OUTPUT.mkdir(exist_ok=True)
 string_output = ''
 
 with open(path_file_log) as file_log:
-    lines_log =\
-        [line for line in [line.split(' ') for line in file_log.readlines()] if line[5][1:] in TYPES_REQUESTS]
+    lines_log = [line.split(' ') for line in file_log.readlines()]
 
 string_output += f'Общее количество запросов\n'
 amount_requests_overall = len(lines_log)
 string_output += str(amount_requests_overall)
                  
 string_output += '\n\nОбщее количество запросов по типу\n'
-amount_requests_by_type = {type: 0 for type in TYPES_REQUESTS}
+amount_requests_by_type = collections.defaultdict(lambda: 0)
 for line in lines_log:
     amount_requests_by_type[line[5][1:]] += 1
 string_output += '\n'.join([f'{type} - {amount_requests_by_type[type]}' for type in amount_requests_by_type])

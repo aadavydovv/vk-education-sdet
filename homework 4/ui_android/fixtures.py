@@ -8,17 +8,16 @@ import pytest
 
 
 @pytest.fixture(scope='function')
-def driver(config):
+def driver(config, apk_path):
     appium_server = config['appium_server']
 
-    path_repo = Path(__file__).parents[2]
     capabilities = {
         'platformName': 'Android',
         'platformVersion': '8.1',
         'automationName': 'Appium',
         'appPackage': 'ru.mail.search.electroscope',
         'appActivity': '.ui.activity.AssistantActivity',
-        'app': f'{path_repo / config["apk_path"]}',
+        'app': str(apk_path),
         'orientation': 'PORTRAIT',
         'autoGrantPermissions': True
     }
@@ -44,5 +43,10 @@ def page_settings_news(driver):
 
 
 @pytest.fixture(scope='function')
-def page_settings_about(driver, config):
-    return PageSettingsAbout(driver, config)
+def page_settings_about(driver, apk_path):
+    return PageSettingsAbout(driver, apk_path)
+
+
+@pytest.fixture(scope='session')
+def apk_path(config):
+    return Path.joinpath(Path(__file__).parents[2], config['apk_path'])

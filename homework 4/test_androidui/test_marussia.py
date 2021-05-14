@@ -8,7 +8,7 @@ class TestCommand(BaseCase):
         self.page_assistant.say('Russia')
         self.page_assistant.check_response('государство в Восточной Европе и Северной Азии')
 
-        self.page_assistant.select_suggestion('численность населения россии')
+        self.page_assistant.select_suggestion('население россии')
         self.page_assistant.check_response('146 млн')
 
     @pytest.mark.AndroidUI

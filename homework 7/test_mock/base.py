@@ -5,8 +5,8 @@ import pytest
 
 class BaseCase:
     @pytest.fixture(scope='function', autouse=True)
-    def setup(self):
-        self.client = HTTPClient()
+    def setup(self, logger):
+        self.client = HTTPClient(logger)
 
         faker_instance = Faker()
         self.name_first = faker_instance.first_name()

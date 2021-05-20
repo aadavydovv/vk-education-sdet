@@ -1,7 +1,9 @@
 from mock import server
 from mock.constants import *
+from mock.logger import HTTPLogger
 from pathlib import Path
 from requests.exceptions import ConnectionError
+import pytest
 import requests
 import time
 
@@ -29,6 +31,11 @@ def mock_start():
 
 def mock_stop():
     requests.get(f'http://{MOCK_HOST}:{MOCK_PORT}/shutdown')
+
+
+@pytest.fixture(scope='session')
+def logger():
+    return HTTPLogger()
 
 
 def pytest_configure(config):

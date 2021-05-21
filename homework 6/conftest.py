@@ -8,7 +8,7 @@ SQL_DB_NAME = 'TEST_SQL'
 
 
 def pytest_addoption(parser):
-    parser.addoption('--log_path', default='../misc/access.log')  # путь к логу от корня репы
+    parser.addoption('--log_path', default='homework 6/misc/access.log')  # путь к логу от корня репы
 
 
 def pytest_configure(config):

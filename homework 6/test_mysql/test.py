@@ -1,5 +1,5 @@
-from mysql.models import AmountRequestsOverall, AmountRequestsByType, TopByUrl, TopBySizeWithClientError, \
-    TopByIpWithServerError
+from mysql.models import (AmountRequestsOverall, AmountRequestsByType, TopByUrl, TopBySizeWithClientError,
+                          TopByIpWithServerError)
 from test_mysql.base import MySQLBase
 
 

@@ -35,21 +35,21 @@ def request_get_user(user_id):
     return jsonify(message), STATUS_OK
 
 
-# менеджмент id - вручную, ибо иначе параллельные тесты работают криво?
 @app.route('/put_user/<user_id>', methods=['PUT'])
 def request_put_user(user_id):
     data = request.get_json()
     name_first = data.get('name_first')
     name_last = data.get('name_last')
 
-    if not (name_first or name_last):
-        return jsonify(f"a \"put_user\" request needs at least a first or a last name"), STATUS_BAD_REQUEST
-
     if user_id in users:
+        if not (name_first or name_last):
+            return jsonify(f'to edit a user a request needs at least a first or a last name'), STATUS_BAD_REQUEST
+
         status = STATUS_OK
+
     else:
         if not name_first:
-            return jsonify(f"a new user should at least have a first name"), STATUS_BAD_REQUEST
+            return jsonify(f'a new user should at least have a first name'), STATUS_BAD_REQUEST
 
         status = STATUS_CREATED
 
@@ -86,3 +86,29 @@ def request_delete_user(user_id):
 
     else:
         return jsonify(f'a user with id "{user_id}" does not exist'), STATUS_ERROR
+
+
+@app.route('/post_user/<user_id>', methods=['POST'])
+def request_post_user(user_id):
+    if user_id in users:
+        return jsonify(f'the user with id \"{user_id}\" already exists'), STATUS_ERROR
+
+    data = request.get_json()
+
+    name_first = data.get('name_first')
+    if not name_first:
+        return jsonify(f'a \"post_user\" request needs at least a first name'), STATUS_BAD_REQUEST
+
+    name_last = data.get('name_last')
+
+    users[user_id] = {}
+    message = {'id': user_id}
+
+    users[user_id]['name_first'] = name_first
+    message['name_first'] = name_first
+
+    if name_last:
+        users[user_id]['name_last'] = name_last
+        message['name_last'] = name_last
+
+    return jsonify(message), STATUS_CREATED

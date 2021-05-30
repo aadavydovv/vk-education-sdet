@@ -33,19 +33,24 @@ class HTTPClient:
         self.logger.parse_request(request)
         return self._receive()
 
-    def put_user(self, user_id, name_first, name_last=None):
+    def _post_or_put_user(self, is_post: bool, user_id, name_first, name_last):
         data = f'{{"name_first":"{name_first}"}}'
 
         if name_last:
             data = f'{data[:-1]},"name_last":"{name_last}"{data[-1:]}'
 
-        request = f'PUT /put_user/{user_id} HTTP/1.1\r\n' \
+        method = 'POST' if is_post else 'PUT'
+
+        request = f'{method} /{method.lower()}_user/{user_id} HTTP/1.1\r\n' \
                   f'Host: {MOCK_HOST}\r\n' \
                   f'Content-Type: application/json\r\n' \
                   f'Content-Length: {len(data)}\r\n\r\n' \
                   f'{data}\r\n'
 
         return self._make_request(request)
+
+    def put_user(self, user_id, name_first, name_last=None):
+        return self._post_or_put_user(False, user_id, name_first, name_last)
 
     def get_user(self, user_id):
         request = f'GET /get_user/{user_id} HTTP/1.1\r\n' \
@@ -58,3 +63,6 @@ class HTTPClient:
                   f'Host: {MOCK_HOST}\r\n\r\n'
         
         return self._make_request(request)
+
+    def post_user(self, user_id, name_first, name_last=None):
+        return self._post_or_put_user(True, user_id, name_first, name_last)

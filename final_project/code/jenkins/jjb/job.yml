@@ -1,0 +1,59 @@
+- job:
+
+    name: myapp_testing
+
+    description: |-
+      a job for testing the myapp in 4 steps
+
+      1) build docker containers
+        the vk api mock and the tests
+
+      2) setup the system
+        create a network, run docker containers and initialize the mysql db
+
+      3) run the tests
+      
+      4) generate an allure report and do a cleanup
+        a cleanup includes killing docker containers and removing a network
+       
+       
+
+    parameters:
+    - string:
+        default: '2'
+        description: amount of threads for a testing
+        name: PYTEST_THREADS
+        trim: 'true'
+    - string:
+        description: run api tests by a keyword expression
+        name: PYTEST_KEYWORD_TESTS_API
+        trim: 'true'
+    - string:
+        description: run ui tests by a keyword expression
+        name: PYTEST_KEYWORD_TESTS_UI
+        trim: 'true'
+    - string:
+        description: run api tests by a marker expression
+        name: PYTEST_MARK_TESTS_API
+        trim: 'true'
+    - string:
+        description: run ui tests by a marker expression
+        name: PYTEST_MARK_TESTS_UI
+        trim: 'true'
+
+    project-type: pipeline
+    concurrent: true
+    auth-token: default
+
+    pipeline-scm:
+      script-path: final_project/code/jenkins/file
+      scm:
+      - git:
+          url: git@github.com:x73495/jenkins-test.git
+          credentials-id: b85497a6-ccab-442c-bab3-e590c533c2fb
+          branches:
+          - '*/final-project'
+
+    properties:
+    - build-discarder:
+        num-to-keep: 10

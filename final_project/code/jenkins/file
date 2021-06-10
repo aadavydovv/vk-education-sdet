@@ -1,0 +1,58 @@
+pipeline {
+
+    agent {
+        label 'master'
+    }
+
+    options {
+        buildDiscarder logRotator(numToKeepStr: '10')
+        timestamps()
+    }
+
+    environment {
+        DIR_BUILDERS = "$WORKSPACE/final_project/code/jenkins/builders"
+    }
+
+    stages {
+        stage('build') {
+            steps {
+                sh 'bash "$DIR_BUILDERS/build.sh"'
+            }
+        }
+
+        stage('setup') {
+            steps {
+                sh 'bash "$DIR_BUILDERS/setup.sh"'
+            }
+        }
+
+        stage('run tests') {
+            parallel {
+                stage('test api') {
+                    steps {
+                        sh 'bash "$DIR_BUILDERS/tests_api.sh"'
+                    }
+                }
+
+                stage('test ui') {
+                    steps {
+                        sh 'bash "$DIR_BUILDERS/tests_ui.sh"'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            allure([
+                results: [[path: 'allure']]
+            ])
+        }
+
+        cleanup {
+            sh 'bash "$DIR_BUILDERS/cleanup.sh"'
+            cleanWs()
+        }
+    }
+}

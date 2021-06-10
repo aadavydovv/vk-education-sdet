@@ -49,7 +49,7 @@
       script-path: final_project/code/jenkins/file
       scm:
       - git:
-          url: git@github.com:x73495/jenkins-test.git
+          url: git@github.com:x73495/2021-1-MAILRU-SDET-Python-A-Davydov.git
           credentials-id: b85497a6-ccab-442c-bab3-e590c533c2fb
           branches:
           - '*/final-project'

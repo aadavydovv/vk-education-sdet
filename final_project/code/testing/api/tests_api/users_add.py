@@ -28,8 +28,7 @@ class TestAPIUsersAdd(CaseAPIUsers):
         """
         self.authorize_control_user()
 
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         response = self.add_user(username)
 
         self.check_response_status(response, STATUS_CREATED)
@@ -45,8 +44,7 @@ class TestAPIUsersAdd(CaseAPIUsers):
 
         ответ должен иметь статус 401 - пользователь не авторизован
         """
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         response = self.add_user(username)
 
         self.check_response_status(response, STATUS_UNAUTHORIZED)
@@ -100,8 +98,7 @@ class TestAPIUsersAdd(CaseAPIUsers):
         """
         self.authorize_control_user()
 
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         response = self.add_user(username, email=INVALID_EMAIL_TOO_SHORT)
 
         self.check_response_status(response, STATUS_BAD_REQUEST)
@@ -120,8 +117,7 @@ class TestAPIUsersAdd(CaseAPIUsers):
         """
         self.authorize_control_user()
 
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         response = self.add_user(username, email=INVALID_EMAIL_TOO_LONG)
 
         #with pytest.raises(UnexpectedResponseStatusException):
@@ -141,8 +137,7 @@ class TestAPIUsersAdd(CaseAPIUsers):
         """
         self.authorize_control_user()
 
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         response = self.add_user(username, email=INVALID_EMAIL_FORMAT)
 
         self.check_response_status(response, STATUS_BAD_REQUEST)
@@ -161,8 +156,7 @@ class TestAPIUsersAdd(CaseAPIUsers):
         """
         self.authorize_control_user()
 
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         response = self.add_user(username, password='')
 
         self.check_response_status(response, STATUS_BAD_REQUEST)
@@ -181,8 +175,7 @@ class TestAPIUsersAdd(CaseAPIUsers):
         """
         self.authorize_control_user()
 
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         response = self.add_user(username, password=INVALID_PASSWORD_TOO_LONG)
 
         self.check_response_status(response, STATUS_BAD_REQUEST)
@@ -199,8 +192,7 @@ class TestAPIUsersAdd(CaseAPIUsers):
 
         ответ должен иметь статус 304 - сущность существует или не изменилась
         """
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         self.register_user(username)
 
         response = self.add_user(username)

@@ -28,8 +28,7 @@ class TestUIRegistration(CaseUIRegistration):
 
         элемент со ссылкой должен быть обнаружен
         """
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         email = make_email(username)
         page_home = self.page_registration.register(username=username, email=email,
                                                     password=VALID_PASSWORD, is_password_confirmed=True)

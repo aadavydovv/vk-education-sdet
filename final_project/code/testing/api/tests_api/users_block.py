@@ -22,8 +22,7 @@ class TestAPIUsersBlock(CaseAPIUsers):
 
         ответ должен иметь статус 200 - действие выполнено
         """
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         self.register_user(username)
 
         response = self.block_user(username)
@@ -42,8 +41,7 @@ class TestAPIUsersBlock(CaseAPIUsers):
 
         ответ должен иметь статус 401 - пользователь не авторизован
         """
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         self.register_user(username)
 
         self.clear_cookies()
@@ -65,8 +63,7 @@ class TestAPIUsersBlock(CaseAPIUsers):
         """
         self.authorize_control_user()
 
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         response = self.block_user(username)
 
         self.check_response_status(response, STATUS_NOT_FOUND)
@@ -85,8 +82,7 @@ class TestAPIUsersBlock(CaseAPIUsers):
 
         ответ должен иметь статус 304 - сущность существует или не изменилась
         """
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         self.register_user(username)
 
         self.authorize_control_user()

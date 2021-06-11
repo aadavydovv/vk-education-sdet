@@ -22,8 +22,7 @@ class TestAPIUsersDelete(CaseAPIUsers):
 
         ответ должен иметь статус 204 - сущность удалена
         """
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         self.register_user(username)
 
         response = self.delete_user(username)
@@ -42,8 +41,7 @@ class TestAPIUsersDelete(CaseAPIUsers):
 
         ответ должен иметь статус 401 - пользователь не авторизован
         """
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         self.register_user(username)
 
         self.clear_cookies()
@@ -65,8 +63,7 @@ class TestAPIUsersDelete(CaseAPIUsers):
         """
         self.authorize_control_user()
 
-        test_name = inspect.currentframe().f_code.co_name
-        username = make_username(test_name)
+        username = make_username()
         response = self.delete_user(username)
 
         self.check_response_status(response, STATUS_NOT_FOUND)

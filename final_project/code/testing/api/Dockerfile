@@ -2,7 +2,7 @@ FROM python:buster
 
 WORKDIR /myapp_testing
 
-COPY testing/requirements_common.txt .
+COPY testing/misc/requirements_common.txt .
 COPY testing/api/misc/requirements.txt .
 RUN pip3 install -r requirements_common.txt -r requirements.txt
 

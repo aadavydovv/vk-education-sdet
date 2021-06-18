@@ -7,7 +7,7 @@ def pytest_configure(config):
 
 def pytest_addoption(parser):
     parser.addoption('--appium_server', default='http://localhost:4723/wd/hub')
-    parser.addoption('--apk_path', default='misc/Marussia_v1.39.1.apk')  # относительно корня репозитория
+    parser.addoption('--apk_path', default='homework 4/misc/Marussia_v1.39.1.apk')  # относительно корня репозитория
 
 
 @pytest.fixture(scope='session')
